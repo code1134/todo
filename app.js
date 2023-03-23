@@ -2,8 +2,8 @@ let taskInput = document.getElementById("taskInput");
 let taskList = document.getElementById("taskList");
 let completedList = document.getElementById("completedList");
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || [];
+let tasks = JSON.parse(window.atob(window.location.hash.slice(1).split("|")[0] || "")) || [];
+let completedTasks = JSON.parse(window.atob(window.location.hash.slice(1).split("|")[1] || "")) || [];
 
 tasks.forEach(task => createTaskElement(task, taskList));
 completedTasks.forEach(task => createTaskElement(task, completedList));
@@ -12,7 +12,7 @@ function addTask() {
     if (taskInput.value.trim()) {
         let task = taskInput.value;
         tasks.push(task);
-        localStorage.setItem("tasks", JSON.stringify(tasks));
+        saveTasks();
         createTaskElement(task, taskList);
         taskInput.value = "";
     }
@@ -35,8 +35,7 @@ function completeTask(button) {
     tasks = tasks.filter(t => t !== taskText);
     completedTasks.push(taskText);
 
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+    saveTasks();
 
     taskList.removeChild(task);
     task.innerHTML = `
@@ -56,6 +55,10 @@ function removeTask(button) {
 
     completedTasks = completedTasks.filter(t => t !== taskText);
 
-    localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+    saveTasks();
     completedList.removeChild(task);
+}
+
+function saveTasks() {
+    window.location.hash = `${window.btoa(JSON.stringify(tasks))}|${window.btoa(JSON.stringify(completedTasks))}`;
 }
