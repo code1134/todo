@@ -1,12 +1,15 @@
 let taskInput = document.getElementById("taskInput");
 let taskList = document.getElementById("taskList");
 let completedList = document.getElementById("completedList");
+let addButton = document.getElementById("addButton");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || [];
 
 tasks.forEach(task => createTaskElement(task, taskList));
 completedTasks.forEach(task => createTaskElement(task, completedList));
+
+addButton.addEventListener("click", addTask);
 
 function addTask() {
   if (taskInput.value.trim()) {
